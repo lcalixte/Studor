@@ -20,28 +20,6 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         body { margin: 0; padding: 0; overflow: hidden; background-color: #0f172a; color: white; }
         #error-display { display: none; padding: 20px; background: #fee2e2; color: #991b1b; border-bottom: 4px solid #7f1d1d; position: fixed; top: 0; left: 0; width: 100%; z-index: 9999; font-family: sans-serif; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-
-        /* --- CSS DÉS 3D --- */
-        .scene { width: 60px; height: 60px; perspective: 600px; display: inline-block; margin: 10px; }
-        .cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 1s ease-out; }
-        .cube__face { position: absolute; width: 60px; height: 60px; border: 2px solid #b91c1c; background: white; border-radius: 10px; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); }
-        .cube__face--1 { transform: rotateY(  0deg) translateZ(30px); }
-        .cube__face--2 { transform: rotateY( 90deg) translateZ(30px); }
-        .cube__face--3 { transform: rotateY(180deg) translateZ(30px); }
-        .cube__face--4 { transform: rotateY(-90deg) translateZ(30px); }
-        .cube__face--5 { transform: rotateX( 90deg) translateZ(30px); }
-        .cube__face--6 { transform: rotateX(-90deg) translateZ(30px); }
-        
-        .dot { width: 10px; height: 10px; background-color: #dc2626; border-radius: 50%; position: absolute; }
-        .face-1 .dot:nth-child(1) { top: 25px; left: 25px; }
-        .face-2 .dot:nth-child(1) { top: 10px; left: 10px; } .face-2 .dot:nth-child(2) { bottom: 10px; right: 10px; }
-        .face-3 .dot:nth-child(1) { top: 10px; left: 10px; } .face-3 .dot:nth-child(2) { top: 25px; left: 25px; } .face-3 .dot:nth-child(3) { bottom: 10px; right: 10px; }
-        .face-4 .dot:nth-child(1) { top: 10px; left: 10px; } .face-4 .dot:nth-child(2) { top: 10px; right: 10px; } .face-4 .dot:nth-child(3) { bottom: 10px; left: 10px; } .face-4 .dot:nth-child(4) { bottom: 10px; right: 10px; }
-        .face-5 .dot:nth-child(1) { top: 10px; left: 10px; } .face-5 .dot:nth-child(2) { top: 10px; right: 10px; } .face-5 .dot:nth-child(3) { top: 25px; left: 25px; } .face-5 .dot:nth-child(4) { bottom: 10px; left: 10px; } .face-5 .dot:nth-child(5) { bottom: 10px; right: 10px; }
-        .face-6 .dot:nth-child(1) { top: 10px; left: 10px; } .face-6 .dot:nth-child(2) { top: 10px; right: 10px; } .face-6 .dot:nth-child(3) { top: 25px; left: 10px; } .face-6 .dot:nth-child(4) { top: 25px; right: 10px; } .face-6 .dot:nth-child(5) { bottom: 10px; left: 10px; } .face-6 .dot:nth-child(6) { bottom: 10px; right: 10px; }
-
-        @keyframes spin { from { transform: rotateX(0) rotateY(0); } to { transform: rotateX(360deg) rotateY(720deg); } }
-        .is-spinning { animation: spin 0.3s infinite linear; }
     </style>
 </head>
 <body>
@@ -66,6 +44,26 @@
             const Trophy = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>);
             const CheckCircle = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>);
             const XCircle = (props) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>);
+
+            // --- NOUVEAU COMPOSANT : PETIT DÉ SVG ---
+            const SmallDice = ({ value }) => {
+                // Positions des points pour chaque face (basé sur une grille 24x24)
+                const dots = {
+                    1: [<circle cx="12" cy="12" r="2.5" fill="white" key="1"/>],
+                    2: [<circle cx="6" cy="6" r="2.5" fill="white" key="1"/>, <circle cx="18" cy="18" r="2.5" fill="white" key="2"/>],
+                    3: [<circle cx="6" cy="6" r="2.5" fill="white" key="1"/>, <circle cx="12" cy="12" r="2.5" fill="white" key="2"/>, <circle cx="18" cy="18" r="2.5" fill="white" key="3"/>],
+                    4: [<circle cx="6" cy="6" r="2.5" fill="white" key="1"/>, <circle cx="18" cy="6" r="2.5" fill="white" key="2"/>, <circle cx="6" cy="18" r="2.5" fill="white" key="3"/>, <circle cx="18" cy="18" r="2.5" fill="white" key="4"/>],
+                    5: [<circle cx="6" cy="6" r="2.5" fill="white" key="1"/>, <circle cx="18" cy="6" r="2.5" fill="white" key="2"/>, <circle cx="12" cy="12" r="2.5" fill="white" key="3"/>, <circle cx="6" cy="18" r="2.5" fill="white" key="4"/>, <circle cx="18" cy="18" r="2.5" fill="white" key="5"/>],
+                    6: [<circle cx="6" cy="6" r="2.5" fill="white" key="1"/>, <circle cx="18" cy="6" r="2.5" fill="white" key="2"/>, <circle cx="6" cy="12" r="2.5" fill="white" key="3"/>, <circle cx="18" cy="12" r="2.5" fill="white" key="4"/>, <circle cx="6" cy="18" r="2.5" fill="white" key="5"/>, <circle cx="18" cy="18" r="2.5" fill="white" key="6"/>]
+                };
+
+                return (
+                    <svg width="28" height="28" viewBox="0 0 24 24" className="inline-block shadow-md">
+                        <rect x="0" y="0" width="24" height="24" rx="4" fill="#dc2626" />
+                        {dots[value] || dots[1]}
+                    </svg>
+                );
+            };
 
             // --- DONNEES ---
             const ROOMS = [
@@ -358,35 +356,6 @@
                 }
             ];
 
-            // --- COMPOSANTS DÉ 3D ---
-            const Dice3D = ({ value, rolling }) => {
-                const getRotation = (val) => {
-                    switch(val) {
-                        case 1: return 'rotateY(0deg) rotateX(0deg)';
-                        case 2: return 'rotateY(90deg) rotateX(0deg)'; // Face droite
-                        case 3: return 'rotateY(180deg) rotateX(0deg)'; // Face arrière
-                        case 4: return 'rotateY(-90deg) rotateX(0deg)'; // Face gauche
-                        case 5: return 'rotateX(-90deg)'; // Face haut
-                        case 6: return 'rotateX(90deg)'; // Face bas
-                        default: return 'rotateY(0deg)';
-                    }
-                };
-
-                return (
-                    <div className="scene">
-                        <div className={`cube ${rolling ? 'is-spinning' : ''}`} 
-                             style={{ transform: rolling ? '' : getRotation(value) }}>
-                            <div className="cube__face cube__face--1 face-1"><div className="dot"></div></div>
-                            <div className="cube__face cube__face--2 face-4"><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div></div>
-                            <div className="cube__face cube__face--3 face-3"><div className="dot"></div><div className="dot"></div><div className="dot"></div></div>
-                            <div className="cube__face cube__face--4 face-2"><div className="dot"></div><div className="dot"></div></div>
-                            <div className="cube__face cube__face--5 face-5"><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div></div>
-                            <div className="cube__face cube__face--6 face-6"><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div></div>
-                        </div>
-                    </div>
-                );
-            };
-
             // --- LOGO FIGARO ---
             const FigaroLogo = () => (
                 <svg viewBox="0 0 100 100" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -482,20 +451,25 @@
                     setGameState('rolling');
                     setIsRolling(true);
                     
-                    // On laisse tourner les dés pendant 2 secondes
-                    setTimeout(() => {
-                        const d1 = Math.floor(Math.random() * 6) + 1;
-                        const d2 = Math.floor(Math.random() * 6) + 1;
-                        const total = d1 + d2;
-                        
-                        setDiceValues([d1, d2]);
-                        setMovesLeft(total);
-                        setIsRolling(false);
-                        setGameState('moving');
-                        
-                        // Nouveau message d'instructions demandé
-                        setCurrentMessage(`Tu as fait ${total} ! Déplace-toi vers une pièce. Clique sur 1 des 4 cases vertes pour te déplacer vers le lieu de ton choix, et continue de progresser ainsi de case en case. Si tu n'as pas assez de points pour continuer, clique sur "Lancer les dés". ATTENTION : Si tu ne vois pas apparaître la question, swype vers le haut de l'écran.`);
-                    }, 2000);
+                    let rolls = 0;
+                    const interval = setInterval(() => {
+                        setDiceValues([
+                            Math.floor(Math.random() * 6) + 1,
+                            Math.floor(Math.random() * 6) + 1
+                        ]);
+                        rolls++;
+                        if (rolls > 10) {
+                            clearInterval(interval);
+                            const d1 = Math.floor(Math.random() * 6) + 1;
+                            const d2 = Math.floor(Math.random() * 6) + 1;
+                            const total = d1 + d2;
+                            setDiceValues([d1, d2]);
+                            setMovesLeft(total);
+                            setIsRolling(false);
+                            setGameState('moving');
+                            setCurrentMessage(`Tu as fait ${total} ! Déplace-toi vers une pièce. Clique sur 1 des 4 cases vertes pour te déplacer vers le lieu de ton choix, et continue de progresser ainsi de case en case. Si tu n'as pas assez de points pour continuer, clique sur "Lancer les dés". ATTENTION : Si tu ne vois pas apparaître la question, swype vers le haut de l'écran.`);
+                        }
+                    }, 100);
                 };
 
                 const getReachableTiles = () => {
@@ -603,19 +577,25 @@
                                     <span className="text-xs font-bold uppercase text-slate-400 flex items-center gap-1"><CheckCircle className="w-3 h-3"/> Progression</span>
                                     <span className="bg-blue-600 text-xs font-bold px-2 py-0.5 rounded-full text-white">{completedCards.length} / {FULL_CARDS_DB.length}</span>
                                 </div>
-                                <div className="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                                <div className="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden mb-3">
                                     <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-full transition-all duration-500" style={{ width: `${(completedCards.length / FULL_CARDS_DB.length) * 100}%` }} />
                                 </div>
-                                <p className="text-xs font-medium text-slate-200 mt-2 leading-snug">{currentMessage}</p>
+                                
+                                {/* ZONE D'AFFICHAGE RÉSULTAT DANS LA PROGRESSION */}
+                                {(gameState === 'moving' || isRolling) && (
+                                    <div className="flex items-center justify-center gap-3 mb-2 bg-slate-900/50 p-2 rounded-lg animate-in slide-in-from-top duration-300">
+                                        <div className="flex gap-1">
+                                            <SmallDice value={diceValues[0]} />
+                                            <SmallDice value={diceValues[1]} />
+                                        </div>
+                                        <span className="text-xl font-bold text-yellow-400">= {diceValues[0] + diceValues[1]}</span>
+                                    </div>
+                                )}
+
+                                <p className="text-xs font-medium text-slate-200 leading-snug">{currentMessage}</p>
                             </div>
 
-                            <div className="mb-6 flex flex-col items-center justify-center">
-                                {/* ZONE DÉS 3D */}
-                                <div className="flex justify-center mb-4 h-24">
-                                    <Dice3D value={diceValues[0]} rolling={isRolling} />
-                                    <Dice3D value={diceValues[1]} rolling={isRolling} />
-                                </div>
-
+                            <div className="mb-6 flex flex-col justify-center">
                                 {(gameState === 'start' || gameState === 'idle') && (
                                     <button onClick={handleRollDice} className="w-full py-3 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 rounded-xl shadow-lg shadow-red-900/50 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 font-black text-lg text-white">
                                         <DiceIcon className="w-6 h-6" /> LANCER LES DÉS
@@ -624,10 +604,8 @@
                                 
                                 {gameState === 'moving' && (
                                     <div className="text-center w-full py-2 bg-slate-800 rounded-lg border border-slate-700">
-                                        <span className="text-slate-400 text-xs uppercase block">Déplacements</span>
-                                        <div className="text-2xl font-bold text-white flex justify-center gap-4">
-                                            <span>{diceValues[0]}</span> + <span>{diceValues[1]}</span> = <span className="text-yellow-400">{movesLeft}</span>
-                                        </div>
+                                        <span className="text-slate-400 text-xs uppercase block">Déplacements restants</span>
+                                        <span className="text-2xl font-bold text-white">{movesLeft}</span>
                                     </div>
                                 )}
                             </div>
